@@ -24,16 +24,23 @@ for iten in dicionario_fonte:
     else:
         regioes[iten['sub-regiao']['regiao']['nome']].append(iten['nome'])
 
-'''print(regioes)
-for iten in regioes:
-    print(iten)
-    print(regioes[iten])'''
+
+def mostrar_paises_de_cada_continente():
+    print(regioes)
+    for iten in regioes:
+        print(iten)
+        print(regioes[iten])
 
 
+def mostrar_numero_de_paises_de_cada_continente():
+    dicionario_teste = dict()
+    for i in regioes:
+        dicionario_teste[i] = len(regioes[i])
+    print(dicionario_teste)
 
-dicionario_teste = dict()
-for i in regioes:
-    dicionario_teste[i] = f'{len(regioes[i])}'
-print(dicionario_teste)
+    graficos.lines_graphic_ramp_up(dicionario_teste, "Continentes", "No de paises", "Paises por Continentes")
+    graficos.bars_graphic_ramp_up(dicionario_teste, "Continentes", "No de paises", "Paises por Continente")
 
-graficos.lines_graphic_ramp_up(dicionario_teste)
+'''mostrar_paises_de_cada_continente()
+print("--------------------------")
+mostrar_numero_de_paises_de_cada_continente()'''
