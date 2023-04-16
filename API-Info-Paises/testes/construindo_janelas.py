@@ -23,13 +23,15 @@ class NewWindowStart:
         self.menu_menu = Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="Menu", menu=self.menu_menu)
 
+        # ___ em teste  __  ___________   __________________   _________
         self.menu_continente = Menu(self.menu, tearoff=0)
         self.menu_menu.add_cascade(label="Menu", menu=self.menu_continente)
 
         self.menu_continente.add_command(label="Paises de cada continente",
-                                         command=captar_continentes.mostrar_paises_de_cada_continente)
+                                         command=self.executar_mostrar_paises)
         self.menu_continente.add_command(label="No de Paises por continente",
-                                         command=captar_continentes.mostrar_numero_de_paises_de_cada_continente)
+                                         command=self.executar_mostrar_numero_de_paises)
+        # ____   ___  _______    _________   _____________  ________
 
         self.frame = Frame(self.window, bg="black")
         self.frame.pack()
@@ -59,9 +61,29 @@ class NewWindowStart:
 
         self.window.mainloop()
 
-    def executar(self):
-        dicio_teste = {'haha': 1, "xx": 2}
-        graficos.lines_graphic_ramp_up(dicio_teste)
+    def executar_mostrar_paises(self):
+        self.text.delete(1.0, "end")
+
+        regioes = captar_continentes.mostrar_paises_de_cada_continente()
+        text_memory = Text()
+
+        text_memory.insert(1.0, f"{' '*10}   Paises de cada continente:")
+        for iten in regioes:
+            text_memory.insert("end", f"\n\n({iten})\n -  ")
+            for i in regioes[iten]:
+                text_memory.insert("end", f"{i},  ")
+        self.text.insert("end", text_memory.get(1.0, "end"))
+
+    def executar_mostrar_numero_de_paises(self):
+        self.text.delete(1.0, "end")
+
+        dicionario_temporario = captar_continentes.mostrar_numero_de_paises_de_cada_continente()
+
+        # graficos.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
+
+        self.text.insert(1.0, f"   Quantidade de paises em cada continente:\n\n")
+        for i in dicionario_temporario:
+            self.text.insert("end", f"- {i}: {dicionario_temporario[i]}\n")
 
 
 NewWindowStart()

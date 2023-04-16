@@ -30,8 +30,8 @@ def mostrar_todos_os_indicadores_de_um_pais(pais):
         print(f"{i['series'][0]['serie']}\n")
 
 
-'''mostrar_id_dos_indicadores()
+mostrar_id_dos_indicadores()
 print(f"\n{'-' * 20}\n")
 mostrar_indicador_especifico_de_pais_especifico('US', '77849')
 print(f"\n//{'-' * 20}\n")
-mostrar_todos_os_indicadores_de_um_pais("BR")'''
+mostrar_todos_os_indicadores_de_um_pais("BR")

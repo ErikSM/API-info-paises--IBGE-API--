@@ -26,21 +26,23 @@ for iten in dicionario_fonte:
 
 
 def mostrar_paises_de_cada_continente():
-    print(regioes)
+    """print(regioes)
     for iten in regioes:
         print(iten)
-        print(regioes[iten])
+        print(regioes[iten])"""
+    return regioes
 
 
 def mostrar_numero_de_paises_de_cada_continente():
-    dicionario_teste = dict()
+    dicionario_temporario = dict()
     for i in regioes:
-        dicionario_teste[i] = len(regioes[i])
-    print(dicionario_teste)
+        dicionario_temporario[i] = len(regioes[i])
+    # print(dicionario_temporario)
+    return dicionario_temporario
 
-    graficos.lines_graphic_ramp_up(dicionario_teste, "Continentes", "No de paises", "Paises por Continentes")
-    graficos.bars_graphic_ramp_up(dicionario_teste, "Continentes", "No de paises", "Paises por Continente")
+    # graficos.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
+    # graficos.bars_graphic_ramp_up(dicionario_teste, "Continentes", "No de paises", "Paises por Continente")
 
-'''mostrar_paises_de_cada_continente()
+"""mostrar_paises_de_cada_continente()
 print("--------------------------")
-mostrar_numero_de_paises_de_cada_continente()'''
+mostrar_numero_de_paises_de_cada_continente()"""
