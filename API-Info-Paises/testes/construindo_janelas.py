@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import *
 from graficos import graficos
-from testes import captar_continentes
+from testes import continentes
 
 
 class NewWindowStart:
@@ -64,7 +64,7 @@ class NewWindowStart:
     def executar_mostrar_paises(self):
         self.text.delete(1.0, "end")
 
-        regioes = captar_continentes.mostrar_paises_de_cada_continente()
+        regioes = continentes.mostrar_paises_de_cada_continente()
         text_memory = Text()
 
         text_memory.insert(1.0, f"{' '*10}   Paises de cada continente:")
@@ -77,7 +77,7 @@ class NewWindowStart:
     def executar_mostrar_numero_de_paises(self):
         self.text.delete(1.0, "end")
 
-        dicionario_temporario = captar_continentes.mostrar_numero_de_paises_de_cada_continente()
+        dicionario_temporario = continentes.mostrar_numero_de_paises_de_cada_continente()
 
         # graficos.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
 
