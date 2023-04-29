@@ -3,7 +3,7 @@ from tkinter import *
 import json
 import requests
 
-from actions import capture_indicators
+from actions import capture_indicators, capture_continents
 
 
 def start(window=None):
@@ -38,6 +38,11 @@ class AppStart:
         self.menu_indices = Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="Indices", menu=self.menu_indices)
         self.menu_indices.add_command(label="Indice de Paises", command=self.index)
+
+        # // continentes(em desenvolvimento)
+        self.menu_continentes = Menu(self.menu, tearoff=0)
+        self.menu.add_cascade(label="Continentes", menu=self.menu_continentes)
+        self.menu_continentes.add_command(label="Sobre continentes", command=self.abrir_continentes)
 
         self.frame = Frame(self.window, bg="grey90")
         self.frame.pack()
@@ -212,6 +217,33 @@ class AppStart:
             self.button_return.configure(font="Consolas 8 bold", text="voltar", bd=1,
                                          command=self.back_to_search_settings)
             self.button_return.grid(row=0, column=0)
+
+    # //// ---  em desenvolvimento ----------  -------------------  -----------
+    def abrir_continentes(self):
+        continentes_existentes = capture_continents.mostrar_continentes_existentes()
+        mostrar_paises = capture_continents.mostrar_paises_de_cada_continente()
+        quantidade_de_paises = capture_continents.mostrar_numero_de_paises_de_cada_continente()
+
+        self.list.config(state=NORMAL)
+        for i in continentes_existentes:
+            self.list.insert(END, f"{i}")
+
+        self.text.insert(END, f"Quantidade de paises:\n")
+        for i in quantidade_de_paises:
+            self.text.insert(END, f"-{i}: {quantidade_de_paises[i]} paises\n")
+
+        self.text.insert(END, f"\n\nPaises de cada continente:\n")
+        for i in mostrar_paises:
+            self.text.insert(END, f"* {i}:\n{mostrar_paises[i]}\n\n")
+
+        self.button_search.config(text=f"Selecionar continente:")
+        self.button_search.configure(command=self.selecionar_continente)
+        self.label_of_search.config(text=f"Infomracoes sobre\ncontinente selecionado")
+        self.entry_of_search.destroy()
+
+    def selecionar_continente(self):
+        pass
+    # ---------------------------------  ---------------------------   -----------
 
 
 start()

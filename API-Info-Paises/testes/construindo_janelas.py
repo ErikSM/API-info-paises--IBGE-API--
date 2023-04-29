@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import *
-from graficos import graficos
+from graphics import graphic
 from testes import continentes
 
 
@@ -79,7 +79,7 @@ class NewWindowStart:
 
         dicionario_temporario = continentes.mostrar_numero_de_paises_de_cada_continente()
 
-        # graficos.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
+        # graphics.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
 
         self.text.insert(1.0, f"   Quantidade de paises em cada continente:\n\n")
         for i in dicionario_temporario:

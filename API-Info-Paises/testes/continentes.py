@@ -47,8 +47,8 @@ def mostrar_numero_de_paises_de_cada_continente():
     # print(dicionario_temporario)
     return dicionario_temporario
 
-    # graficos.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
-    # graficos.bars_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continente")
+    # graphics.lines_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continentes")
+    # graphics.bars_graphic_ramp_up(dicionario_temporario, "Continentes", "No de paises", "Paises por Continente")
 
 
 print(mostrar_paises_de_cada_continente())
