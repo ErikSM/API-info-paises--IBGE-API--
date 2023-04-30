@@ -167,8 +167,12 @@ class AppStart:
             self.list.insert(END, f"{indicator_code}:  {indicator}")
 
         for i in country_indicators:
-            indicator = f"({i['id']}){i['indicador']}: {i['series'][0]['pais']}"
-            information = f"{i['series'][0]['serie']}"
+            try:
+                indicator = f"({i['id']}){i['indicador']}: {i['series'][0]['pais']}"
+                information = f"{i['series'][0]['serie']}"
+            except Exception as ex:
+                indicator = f"({i['id']}){i['indicador']}: {i['series']}- error{ex}??"
+                information = f"{i['series']}error{ex} -- Conteudo inexistente"
             self.text.insert(END, f"{indicator}\n")
             self.text.insert(END, f"{information}\n\n")
 
@@ -189,8 +193,11 @@ class AppStart:
             self.list.insert(END, f" ")
             for i in indicator_content[0]:
                 if i == "series":
-                    for option in indicator_content[0][i][0]["serie"]:
-                        self.text.insert(END, f"**{option}\n")
+                    try:
+                        for option in indicator_content[0][i][0]["serie"]:
+                            self.text.insert(END, f"**{option}\n")
+                    except Exception as ex:
+                        self.text.insert(END, f"ERRor {ex} \n\n Conteudo inexistente")
                 else:
                     self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
                     self.list.insert(END, f" ")
