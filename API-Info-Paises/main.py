@@ -85,7 +85,7 @@ class AppStart:
         self.label_of_list.pack()
 
     def _back_to_search_settings(self):
-        self.button_return.destroy()
+        #self.button_return.destroy()
         self._initial_settings()
         self.entry_of_search.insert(0, self.country_select)
         self.search()
@@ -195,13 +195,8 @@ class AppStart:
                     self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
                     self.list.insert(END, f" ")
 
-            self.button_search.destroy()
             self.label_of_search.config(text=f"")
-
-            self.button_return = Button(self.sub_frame_left)
-            self.button_return.configure(font="Consolas 8 bold", text="voltar", bd=1,
-                                         command=self._back_to_search_settings)
-            self.button_return.grid(row=0, column=0)
+            self.button_search.configure(text="voltar", command=self._back_to_search_settings)
 
     def open_countries(self):
         self.list.config(state=tkinter.NORMAL)
@@ -243,7 +238,7 @@ class AppStart:
 
         self.label_of_list.config(text=f"Continentes:")
 
-        self.button_search.config(text=f"Selecionar continente:")
+        self.button_search.configure(text=f"Selecionar continente:")
         self.button_search.configure(command=lambda: self._select_continent(
             all_countries_of_one_continent, number_of_contries_from_each))
 
