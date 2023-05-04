@@ -202,24 +202,28 @@ class AppStart:
 
         self.list.config(state=tkinter.NORMAL)
 
-        request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/localidades/paises")
-        dict_of_indexes = json.loads(request.text)
+        try:
+            request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/localidades/paises")
+            dict_of_indexes = json.loads(request.text)
 
-        self.list.delete(0, END)
-        self.text.delete(1.0, END)
+            self.list.delete(0, END)
+            self.text.delete(1.0, END)
 
-        self.text.config(bg="grey90")
-        self.list.config(bg="grey70")
+            self.text.config(bg="grey90")
+            self.list.config(bg="grey70")
 
-        for country in dict_of_indexes:
-            self.list.insert(END, f"{country['id']['ISO-ALPHA-2']}:"
-                                  f" {country['nome']}{' ' * 2}\n")
-            for i in country:
-                if i == "id":
-                    pass
-                else:
-                    self.text.insert(END, f"{i}: {country[i]}    ")
-            self.text.insert(END, f"\n{'-'*20}\n")
+            for country in dict_of_indexes:
+                self.list.insert(END, f"{country['id']['ISO-ALPHA-2']}:"
+                                      f" {country['nome']}{' ' * 2}\n")
+                for i in country:
+                    if i == "id":
+                        pass
+                    else:
+                        self.text.insert(END, f"{i}: {country[i]}    ")
+                self.text.insert(END, f"\n{'-'*20}\n")
+        except Exception as ex:
+            self.text.delete(1.0, END)
+            self.text.insert(END, f"..  xxx ErRor xxx  .. \n\n{ex}")
 
     def open_continents(self):
         all_continents = capture_continents.show_all_continents()
