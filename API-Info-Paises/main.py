@@ -57,7 +57,7 @@ class AppStart:
         self.label_of_list = Label()
         self.label_of_button = Label()
         self.button_action = Button()
-        self._initial_settings()
+        self.all_button_settings("initial")
 
         self.list = Listbox(self.sub_frame_right, width=90, height=9, bd=2, bg="grey90")
         self.list.grid(row=1, column=0)
@@ -65,41 +65,11 @@ class AppStart:
 
         self.window.mainloop()
 
-    def _initial_settings(self):
-        self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
-        self.label_of_list.configure(text="-----------   ----------- :", bg="grey90")
-        self.label_of_list.grid(row=0, column=0)
-
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text="Abra a lista no menu acima:")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left)
-        self.button_action.configure(font="Consolas 8 bold", text="Busca", bd=1, command=self.search)
-        self.button_action.grid(row=1, column=1)
-        self.button_action.config(state=DISABLED)
-
     def _back_to_initial_settings(self):
         start(self.window)
 
     def search(self):
-        self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
-        self.label_of_list.configure(text=f"Infomacoes Basicas:", bg="grey90")
-        self.label_of_list.grid(row=0, column=0)
-
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text="Clique para saber mais:")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
-        self.button_action.configure(text=f"<Informacoes avancadas>", command=self._advanced_information_about_country)
-        self.button_action.grid(row=1, column=1)
+        self.all_button_settings("search")
 
         self.list.config(state=tkinter.NORMAL)
 
@@ -157,20 +127,7 @@ class AppStart:
             self.sigla_of_open_country = self.country_select
 
     def _advanced_information_about_country(self):
-        self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
-        self.label_of_list.configure(text=f"{self.country_open.title()}", bg="grey90")
-        self.label_of_list.grid(row=0, column=0)
-
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text="Selecione um indicador ao lado:")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
-        self.button_action.configure(text=f"Especificar indicador", command=self._show_selected_indicator)
-        self.button_action.grid(row=1, column=1)
+        self.all_button_settings("advanced")
 
         all_indicators = capture_indicators.show_indicators_id()
         country_indicators = capture_indicators.show_all_indicators_of_selected_country(self.sigla_of_open_country)
@@ -199,20 +156,7 @@ class AppStart:
             self.text.insert(END, f"{information}\n\n")
 
     def _show_selected_indicator(self):
-        self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
-        self.label_of_list.configure(text="fonte: IBGE", bg="grey90")
-        self.label_of_list.grid(row=0, column=0)
-
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text="Clique para voltar ao inicio:")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
-        self.button_action.configure(text="voltar", command=self._back_to_initial_settings)
-        self.button_action.grid(row=1, column=1)
+        self.all_button_settings("indicator")
 
         country = self.sigla_of_open_country
         indicator = self.list.get(tkinter.ANCHOR)
@@ -224,7 +168,6 @@ class AppStart:
             self.text.insert(END, f"Error\n\n{'X' * 10}\n\n Selecione uma opcao acima")
         else:
             for i in indicator_content[0]:
-
                 if i == "xxErrorxx (capture_indicator)":
                     self.text.delete(1.0, END)
                     self.text.insert(END, f"{i}:   \n\n{indicator_content[0][i]}")
@@ -236,7 +179,6 @@ class AppStart:
                     self.list.insert(END, f" ")
 
                     if i == "series":
-
                         try:
                             for option in indicator_content[0][i][0]["serie"]:
 
@@ -251,26 +193,12 @@ class AppStart:
                                                               f"{option[information]} ({type_numeric})\n\n ")
                         except Exception as ex:
                             self.text.insert(END, f"ERRor {ex} \n\n Conteudo inexistente('serie')")
-
                     else:
                         self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
                         self.list.insert(END, f" ")
 
     def open_countries(self):
-        self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
-        self.label_of_list.configure(text="Paises:", bg="grey90")
-        self.label_of_list.grid(row=0, column=0)
-
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text="Selecione um pais ao lado:")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left)
-        self.button_action.configure(font="Consolas 8 bold", text="Busca", bd=1, command=self.search)
-        self.button_action.grid(row=1, column=1)
+        self.all_button_settings("countries")
 
         self.list.config(state=tkinter.NORMAL)
 
@@ -294,25 +222,11 @@ class AppStart:
             self.text.insert(END, f"\n{'-'*20}\n")
 
     def open_continents(self):
-        self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
-        self.label_of_list.configure(text="Continentes:", bg="grey90")
-        self.label_of_list.grid(row=0, column=0)
-
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text=f"Selecione um continente ao lado:")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
-        self.button_action.configure(text=f"Selecionar continente:", command=lambda: self._select_continent(
-            all_countries_of_one_continent, number_of_contries_from_each))
-        self.button_action.grid(row=1, column=1)
-
         all_continents = capture_continents.show_all_continents()
         all_countries_of_one_continent = capture_continents.show_contries_each_continent()
         number_of_contries_from_each = capture_continents.show_number_of_countries_from_each_continent()
+
+        self.all_button_settings("continents", all_countries_of_one_continent, number_of_contries_from_each)
 
         self.list.config(state=NORMAL)
         self.list.delete(0, END)
@@ -330,15 +244,7 @@ class AppStart:
             self.text.insert(END, f"* {continent}:\n{all_countries_of_one_continent[continent]}\n\n")
 
     def _select_continent(self, mostrar_paises, quantidade_de_de_paises):
-        self.label_of_button.destroy()
-        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
-        self.label_of_button.configure(text=f"Clique para infomracoes sobre\n o pais selecionado")
-        self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-        self.button_action.destroy()
-        self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
-        self.button_action.configure(text=f"Busca:", command=self.search)
-        self.button_action.grid(row=1, column=1)
+        self.all_button_settings("countries")
 
         continente_selecionado = self.list.get(tkinter.ANCHOR)
 
@@ -354,80 +260,48 @@ class AppStart:
     def all_button_settings(self, config="initial", all_countries=None, number_of_contries=None):
         self.label_of_list.destroy()
         self.label_of_list = Label(self.sub_frame_right)
+        self.label_of_list.grid(row=0, column=0)
 
         self.label_of_button.destroy()
         self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
+        self.label_of_button.grid(row=0, column=0, columnspan=2)
 
         self.button_action.destroy()
         self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
+        self.button_action.grid(row=1, column=1)
 
         if config == "initial":
             self.label_of_list.configure(text="-----------   ----------- :", bg="grey90")
-            self.label_of_list.grid(row=0, column=0)
-
             self.label_of_button.configure(text="Abra a lista no menu acima:")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
             self.button_action.configure(text="Busca", command=self.search)
-            self.button_action.grid(row=1, column=1)
             self.button_action.config(state=DISABLED)
+
         elif config == "search":
             self.label_of_list.configure(text=f"Infomacoes Basicas:", bg="grey90")
-            self.label_of_list.grid(row=0, column=0)
-
             self.label_of_button.configure(text="Clique para saber mais:")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
             self.button_action.configure(text=f"<Informacoes avancadas>",
                                          command=self._advanced_information_about_country)
-            self.button_action.grid(row=1, column=1)
+
         elif config == "advanced":
             self.label_of_list.configure(text=f"{self.country_open.title()}", bg="grey90")
-            self.label_of_list.grid(row=0, column=0)
-
             self.label_of_button.configure(text="Selecione um indicador ao lado:")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
             self.button_action.configure(text=f"Especificar indicador", command=self._show_selected_indicator)
-            self.button_action.grid(row=1, column=1)
+
         elif config == "indicator":
             self.label_of_list.configure(text="fonte: IBGE", bg="grey90")
-            self.label_of_list.grid(row=0, column=0)
-
             self.label_of_button.configure(text="Clique para voltar ao inicio:")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
             self.button_action.configure(text="voltar", command=self._back_to_initial_settings)
-            self.button_action.grid(row=1, column=1)
+
         elif config == "countries":
             self.label_of_list.configure(text="Paises:", bg="grey90")
-            self.label_of_list.grid(row=0, column=0)
-
             self.label_of_button.configure(text="Selecione um pais ao lado:")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
             self.button_action.configure(text="Busca", command=self.search)
-            self.button_action.grid(row=1, column=1)
+
         elif config == "continents":
             self.label_of_list.configure(text="Continentes:", bg="grey90")
-            self.label_of_list.grid(row=0, column=0)
-
             self.label_of_button.configure(text=f"Selecione um continente ao lado:")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
             self.button_action.configure(text=f"Selecionar continente:",
                                          command=lambda: self._select_continent(all_countries, number_of_contries))
-            self.button_action.grid(row=1, column=1)
-        elif config == "select_continent":
-            self.label_of_button.configure(text=f"Clique para infomracoes sobre\n o pais selecionado")
-            self.label_of_button.grid(row=0, column=0, columnspan=2)
-
-            self.button_action.configure(text=f"Busca:", command=self.search)
-            self.button_action.grid(row=1, column=1)
-
-
-
-
 
 
 start()
