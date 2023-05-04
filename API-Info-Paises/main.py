@@ -176,7 +176,6 @@ class AppStart:
         country_indicators = capture_indicators.show_all_indicators_of_selected_country(self.sigla_of_open_country)
 
         self.list.config(state=tkinter.NORMAL)
-
         self.list.delete(0, END)
         self.text.delete(1.0, END)
 
@@ -190,8 +189,12 @@ class AppStart:
                 indicator = f"({i['id']}){i['indicador']}: {i['series'][0]['pais']}"
                 information = f"{i['series'][0]['serie']}"
             except Exception as ex:
-                indicator = f"({i['id']}){i['indicador']}: {i['series']}- error{ex}??"
-                information = f"{i['series']}error{ex} -- Conteudo inexistente"
+                try:
+                    indicator = f"({i['id']}){i['indicador']}: {i['series']}- error{ex}??"
+                    information = f"{i['series']}error{ex} -- Conteudo inexistente"
+                except Exception as ex:
+                    indicator = "xx Error(capture_indicator)"
+                    information = f"{ex}"
             self.text.insert(END, f"{indicator}\n")
             self.text.insert(END, f"{information}\n\n")
 
@@ -220,21 +223,38 @@ class AppStart:
             self.text.delete(1.0, END)
             self.text.insert(END, f"Error\n\n{'X' * 10}\n\n Selecione uma opcao acima")
         else:
-            self.list.delete(0, END)
-            self.text.delete(1.0, END)
-
-            self.list.insert(END, f"    **  {self.country_open.title()}({self.sigla_of_open_country})  **")
-            self.list.insert(END, f" ")
             for i in indicator_content[0]:
-                if i == "series":
-                    try:
-                        for option in indicator_content[0][i][0]["serie"]:
-                            self.text.insert(END, f"**{option}\n")
-                    except Exception as ex:
-                        self.text.insert(END, f"ERRor {ex} \n\n Conteudo inexistente")
+
+                if i == "xxErrorxx (capture_indicator)":
+                    self.text.delete(1.0, END)
+                    self.text.insert(END, f"{i}:   \n\n{indicator_content[0][i]}")
                 else:
-                    self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
+                    self.list.delete(0, END)
+                    self.text.delete(1.0, END)
+
+                    self.list.insert(END, f"    **  {self.country_open.title()}({self.sigla_of_open_country})  **")
                     self.list.insert(END, f" ")
+
+                    if i == "series":
+
+                        try:
+                            for option in indicator_content[0][i][0]["serie"]:
+
+                                for information in option:
+                                    if option[information] is None:
+                                        pass
+                                    else:
+                                        type_numeric = str(indicator_content[0]["unidade"]["id"])
+                                        multiplier = str(indicator_content[0]["unidade"]["multiplicador"])
+                                        self.text.insert(END, f"Data:{information}    -    "
+                                                              f"{multiplier}x   "
+                                                              f"{option[information]} ({type_numeric})\n\n ")
+                        except Exception as ex:
+                            self.text.insert(END, f"ERRor {ex} \n\n Conteudo inexistente('serie')")
+
+                    else:
+                        self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
+                        self.list.insert(END, f" ")
 
     def open_countries(self):
         self.label_of_list.destroy()
@@ -330,5 +350,84 @@ class AppStart:
         self.list.delete(0, END)
         for pais in mostrar_paises[continente_selecionado]:
             self.list.insert(END, f"{pais}\n")
+
+    def all_button_settings(self, config="initial", all_countries=None, number_of_contries=None):
+        self.label_of_list.destroy()
+        self.label_of_list = Label(self.sub_frame_right)
+
+        self.label_of_button.destroy()
+        self.label_of_button = Label(self.sub_frame_left, font="Arial 7 bold", bg="grey90")
+
+        self.button_action.destroy()
+        self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
+
+        if config == "initial":
+            self.label_of_list.configure(text="-----------   ----------- :", bg="grey90")
+            self.label_of_list.grid(row=0, column=0)
+
+            self.label_of_button.configure(text="Abra a lista no menu acima:")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text="Busca", command=self.search)
+            self.button_action.grid(row=1, column=1)
+            self.button_action.config(state=DISABLED)
+        elif config == "search":
+            self.label_of_list.configure(text=f"Infomacoes Basicas:", bg="grey90")
+            self.label_of_list.grid(row=0, column=0)
+
+            self.label_of_button.configure(text="Clique para saber mais:")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text=f"<Informacoes avancadas>",
+                                         command=self._advanced_information_about_country)
+            self.button_action.grid(row=1, column=1)
+        elif config == "advanced":
+            self.label_of_list.configure(text=f"{self.country_open.title()}", bg="grey90")
+            self.label_of_list.grid(row=0, column=0)
+
+            self.label_of_button.configure(text="Selecione um indicador ao lado:")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text=f"Especificar indicador", command=self._show_selected_indicator)
+            self.button_action.grid(row=1, column=1)
+        elif config == "indicator":
+            self.label_of_list.configure(text="fonte: IBGE", bg="grey90")
+            self.label_of_list.grid(row=0, column=0)
+
+            self.label_of_button.configure(text="Clique para voltar ao inicio:")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text="voltar", command=self._back_to_initial_settings)
+            self.button_action.grid(row=1, column=1)
+        elif config == "countries":
+            self.label_of_list.configure(text="Paises:", bg="grey90")
+            self.label_of_list.grid(row=0, column=0)
+
+            self.label_of_button.configure(text="Selecione um pais ao lado:")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text="Busca", command=self.search)
+            self.button_action.grid(row=1, column=1)
+        elif config == "continents":
+            self.label_of_list.configure(text="Continentes:", bg="grey90")
+            self.label_of_list.grid(row=0, column=0)
+
+            self.label_of_button.configure(text=f"Selecione um continente ao lado:")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text=f"Selecionar continente:",
+                                         command=lambda: self._select_continent(all_countries, number_of_contries))
+            self.button_action.grid(row=1, column=1)
+        elif config == "select_continent":
+            self.label_of_button.configure(text=f"Clique para infomracoes sobre\n o pais selecionado")
+            self.label_of_button.grid(row=0, column=0, columnspan=2)
+
+            self.button_action.configure(text=f"Busca:", command=self.search)
+            self.button_action.grid(row=1, column=1)
+
+
+
+
+
 
 start()
