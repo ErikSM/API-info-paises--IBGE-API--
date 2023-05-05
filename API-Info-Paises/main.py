@@ -57,7 +57,7 @@ class AppStart:
         self.label_of_list = Label()
         self.label_of_button = Label()
         self.button_action = Button()
-        self.all_button_settings("initial")
+        self.all_config_settings("initial", self.search)
 
         self.list = Listbox(self.sub_frame_right, width=90, height=9, bd=2, bg="grey90")
         self.list.grid(row=1, column=0)
@@ -65,11 +65,73 @@ class AppStart:
 
         self.window.mainloop()
 
-    def _back_to_initial_settings(self):
-        start(self.window)
+    def open_countries(self):
+        self.all_config_settings("countries", self.search)
+
+        self.list.config(state=tkinter.NORMAL)
+
+        try:
+            request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/localidades/paises")
+            dict_of_indexes = json.loads(request.text)
+
+            self.list.delete(0, END)
+            self.text.delete(1.0, END)
+
+            self.text.config(bg="grey90")
+            self.list.config(bg="grey70")
+
+            for country in dict_of_indexes:
+                self.list.insert(END, f"{country['id']['ISO-ALPHA-2']}:"
+                                      f" {country['nome']}{' ' * 2}\n")
+                for i in country:
+                    if i == "id":
+                        pass
+                    else:
+                        self.text.insert(END, f"{i}: {country[i]}    ")
+                self.text.insert(END, f"\n{'-' * 20}\n")
+        except Exception as ex:
+            self.text.delete(1.0, END)
+            self.text.insert(END, f"..  xxx ErRor xxx  .. \n\n{ex}")
+
+    def open_continents(self):
+        all_continents = capture_continents.show_all_continents()
+        all_countries_of_one_continent = capture_continents.show_contries_each_continent()
+        number_of_contries_from_each = capture_continents.show_number_of_countries_from_each_continent()
+
+        self.all_config_settings("continents", lambda: self._select_continent(all_countries_of_one_continent,
+                                                                              number_of_contries_from_each))
+
+        self.list.config(state=NORMAL)
+        self.list.delete(0, END)
+        self.text.delete(1.0, END)
+
+        for continent in all_continents:
+            self.list.insert(END, f"{continent}")
+
+        self.text.insert(END, f"Quantidade de paises:\n")
+        for continent in number_of_contries_from_each:
+            self.text.insert(END, f"-{continent}: {number_of_contries_from_each[continent]} paises\n")
+
+        self.text.insert(END, f"\n\nPaises de cada continente:\n")
+        for continent in all_countries_of_one_continent:
+            self.text.insert(END, f"* {continent}:\n{all_countries_of_one_continent[continent]}\n\n")
+
+    def _select_continent(self, mostrar_paises, quantidade_de_de_paises):
+        self.all_config_settings("countries", self.search)
+
+        continente_selecionado = self.list.get(tkinter.ANCHOR)
+
+        self.text.delete(1.0, END)
+        self.text.insert(END, f"- {continente_selecionado}:\n")
+        self.text.insert(END, f"Este continente possui um total de "
+                              f"{quantidade_de_de_paises[continente_selecionado]} paises.")
+
+        self.list.delete(0, END)
+        for pais in mostrar_paises[continente_selecionado]:
+            self.list.insert(END, f"{pais}\n")
 
     def search(self):
-        self.all_button_settings("search")
+        self.all_config_settings("search", self._advanced_information_about_country)
 
         self.list.config(state=tkinter.NORMAL)
 
@@ -127,7 +189,7 @@ class AppStart:
             self.sigla_of_open_country = self.country_select
 
     def _advanced_information_about_country(self):
-        self.all_button_settings("advanced")
+        self.all_config_settings("advanced", self._show_selected_indicator)
 
         all_indicators = capture_indicators.show_indicators_id()
         country_indicators = capture_indicators.show_all_indicators_of_selected_country(self.sigla_of_open_country)
@@ -156,7 +218,7 @@ class AppStart:
             self.text.insert(END, f"{information}\n\n")
 
     def _show_selected_indicator(self):
-        self.all_button_settings("indicator")
+        self.all_config_settings("indicator", self._back_to_initial_settings)
 
         country = self.sigla_of_open_country
         indicator = self.list.get(tkinter.ANCHOR)
@@ -165,105 +227,45 @@ class AppStart:
 
         if len(indicator) == 0:
             self.text.delete(1.0, END)
-            self.text.insert(END, f"Error\n\n{'X' * 10}\n\n Selecione uma opcao acima")
+            self.text.insert(END, f"Error(Lista)\n\n{'X' * 10}\n\n Selecione uma opcao acima")
         else:
-            for i in indicator_content[0]:
-                if i == "xxErrorxx (capture_indicator)":
-                    self.text.delete(1.0, END)
-                    self.text.insert(END, f"{i}:   \n\n{indicator_content[0][i]}")
-                else:
-                    self.list.delete(0, END)
-                    self.text.delete(1.0, END)
-
-                    self.list.insert(END, f"    **  {self.country_open.title()}({self.sigla_of_open_country})  **")
-                    self.list.insert(END, f" ")
-
-                    if i == "series":
-                        try:
-                            for option in indicator_content[0][i][0]["serie"]:
-
-                                for information in option:
-                                    if option[information] is None:
-                                        pass
-                                    else:
-                                        type_numeric = str(indicator_content[0]["unidade"]["id"])
-                                        multiplier = str(indicator_content[0]["unidade"]["multiplicador"])
-                                        self.text.insert(END, f"Data:{information}    -    "
-                                                              f"{multiplier}x   "
-                                                              f"{option[information]} ({type_numeric})\n\n ")
-                        except Exception as ex:
-                            self.text.insert(END, f"ERRor {ex} \n\n Conteudo inexistente('serie')")
-                    else:
-                        self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
-                        self.list.insert(END, f" ")
-
-    def open_countries(self):
-        self.all_button_settings("countries")
-
-        self.list.config(state=tkinter.NORMAL)
-
-        try:
-            request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/localidades/paises")
-            dict_of_indexes = json.loads(request.text)
-
             self.list.delete(0, END)
             self.text.delete(1.0, END)
 
-            self.text.config(bg="grey90")
-            self.list.config(bg="grey70")
+            self.list.insert(END, f"    **  {self.country_open.title()}({self.sigla_of_open_country})  **")
+            self.list.insert(END, f" ")
 
-            for country in dict_of_indexes:
-                self.list.insert(END, f"{country['id']['ISO-ALPHA-2']}:"
-                                      f" {country['nome']}{' ' * 2}\n")
-                for i in country:
-                    if i == "id":
-                        pass
-                    else:
-                        self.text.insert(END, f"{i}: {country[i]}    ")
-                self.text.insert(END, f"\n{'-'*20}\n")
-        except Exception as ex:
-            self.text.delete(1.0, END)
-            self.text.insert(END, f"..  xxx ErRor xxx  .. \n\n{ex}")
+            for i in indicator_content[0]:
 
-    def open_continents(self):
-        all_continents = capture_continents.show_all_continents()
-        all_countries_of_one_continent = capture_continents.show_contries_each_continent()
-        number_of_contries_from_each = capture_continents.show_number_of_countries_from_each_continent()
+                if i == "xxErrorxx (capture_indicator)":
+                    self.text.insert(END, f"{i}:   \n\n{indicator_content[0][i]}")
 
-        self.all_button_settings("continents", all_countries_of_one_continent, number_of_contries_from_each)
+                elif i == "series":
+                    try:
+                        for option in indicator_content[0][i][0]["serie"]:
 
-        self.list.config(state=NORMAL)
-        self.list.delete(0, END)
-        self.text.delete(1.0, END)
+                            for information in option:
+                                if option[information] is None:
+                                    pass
+                                else:
+                                    type_numeric = str(indicator_content[0]["unidade"]["id"])
+                                    multiplier = str(indicator_content[0]["unidade"]["multiplicador"])
+                                    self.text.insert(END, f"Data:{information}    -    "
+                                                          f"{multiplier}x   "
+                                                          f"{option[information]} ({type_numeric})\n\n ")
+                    except Exception as ex:
+                        self.text.insert(END, f"ERRor {ex} \n\n Conteudo inexistente('serie')")
 
-        for continent in all_continents:
-            self.list.insert(END, f"{continent}")
+                else:
+                    self.list.insert(END, f'-{i.upper()}:   {indicator_content[0][i]}')
+                    self.list.insert(END, f" ")
 
-        self.text.insert(END, f"Quantidade de paises:\n")
-        for continent in number_of_contries_from_each:
-            self.text.insert(END, f"-{continent}: {number_of_contries_from_each[continent]} paises\n")
+    def _back_to_initial_settings(self):
+        start(self.window)
 
-        self.text.insert(END, f"\n\nPaises de cada continente:\n")
-        for continent in all_countries_of_one_continent:
-            self.text.insert(END, f"* {continent}:\n{all_countries_of_one_continent[continent]}\n\n")
-
-    def _select_continent(self, mostrar_paises, quantidade_de_de_paises):
-        self.all_button_settings("countries")
-
-        continente_selecionado = self.list.get(tkinter.ANCHOR)
-
-        self.text.delete(1.0, END)
-        self.text.insert(END, f"- {continente_selecionado}:\n")
-        self.text.insert(END, f"Este continente possui um total de "
-                              f"{quantidade_de_de_paises[continente_selecionado]} paises.")
-
-        self.list.delete(0, END)
-        for pais in mostrar_paises[continente_selecionado]:
-            self.list.insert(END, f"{pais}\n")
-
-    def all_button_settings(self, config="initial", all_countries=None, number_of_contries=None):
+    def all_config_settings(self, config_type, button_command):
         self.label_of_list.destroy()
-        self.label_of_list = Label(self.sub_frame_right)
+        self.label_of_list = Label(self.sub_frame_right, bg="grey90")
         self.label_of_list.grid(row=0, column=0)
 
         self.label_of_button.destroy()
@@ -274,38 +276,49 @@ class AppStart:
         self.button_action = Button(self.sub_frame_left, font="Consolas 8 bold", bd=1)
         self.button_action.grid(row=1, column=1)
 
-        if config == "initial":
-            self.label_of_list.configure(text="-----------   ----------- :", bg="grey90")
+        if config_type == "initial":
+            self.label_of_list.configure(text="-----------   ----------- :")
+
             self.label_of_button.configure(text="Abra a lista no menu acima:")
-            self.button_action.configure(text="Busca", command=self.search)
+
+            self.button_action.configure(text="Busca", command=button_command)
             self.button_action.config(state=DISABLED)
 
-        elif config == "search":
-            self.label_of_list.configure(text=f"Infomacoes Basicas:", bg="grey90")
+        elif config_type == "search":
+            self.label_of_list.configure(text=f"Infomacoes Basicas:")
+
             self.label_of_button.configure(text="Clique para saber mais:")
+
             self.button_action.configure(text=f"<Informacoes avancadas>",
-                                         command=self._advanced_information_about_country)
+                                         command=button_command)
 
-        elif config == "advanced":
-            self.label_of_list.configure(text=f"{self.country_open.title()}", bg="grey90")
+        elif config_type == "advanced":
+            self.label_of_list.configure(text=f"{self.country_open.title()}")
+
             self.label_of_button.configure(text="Selecione um indicador ao lado:")
-            self.button_action.configure(text=f"Especificar indicador", command=self._show_selected_indicator)
 
-        elif config == "indicator":
-            self.label_of_list.configure(text="fonte: IBGE", bg="grey90")
+            self.button_action.configure(text=f"Especificar indicador", command=button_command)
+
+        elif config_type == "indicator":
+            self.label_of_list.configure(text="fonte: IBGE")
+
             self.label_of_button.configure(text="Clique para voltar ao inicio:")
-            self.button_action.configure(text="voltar", command=self._back_to_initial_settings)
 
-        elif config == "countries":
-            self.label_of_list.configure(text="Paises:", bg="grey90")
+            self.button_action.configure(text="voltar", command=button_command)
+
+        elif config_type == "countries":
+            self.label_of_list.configure(text="Paises:")
+
             self.label_of_button.configure(text="Selecione um pais ao lado:")
-            self.button_action.configure(text="Busca", command=self.search)
 
-        elif config == "continents":
-            self.label_of_list.configure(text="Continentes:", bg="grey90")
+            self.button_action.configure(text="Busca", command=button_command)
+
+        elif config_type == "continents":
+            self.label_of_list.configure(text="Continentes:")
+
             self.label_of_button.configure(text=f"Selecione um continente ao lado:")
-            self.button_action.configure(text=f"Selecionar continente:",
-                                         command=lambda: self._select_continent(all_countries, number_of_contries))
+
+            self.button_action.configure(text=f"Selecionar continente:", command=button_command)
 
 
 start()
