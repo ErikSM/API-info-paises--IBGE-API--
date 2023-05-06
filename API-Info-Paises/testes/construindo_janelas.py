@@ -1,7 +1,6 @@
 import tkinter
 from tkinter import *
-from graphics import graphic
-from testes import continentes
+from testes import funcoes_continentes
 
 
 class NewWindowStart:

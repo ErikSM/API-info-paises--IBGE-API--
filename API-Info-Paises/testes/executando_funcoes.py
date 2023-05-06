@@ -1,5 +1,5 @@
-from indicadores import *
-from paises import *
+from funcoes_indicadores import *
+from funcoes_paises import *
 
 # criar objeto Indicador
 print(mostrar_id_dos_indicadores())
@@ -20,3 +20,9 @@ print(f"\n{'-' * 20}\n")
 OBS: Todos os indicadores de um pais esta em uma pagina a parte
 ((endereco a parte))
 """
+"""
+OBS: O conteudo de cada indicador esta em uma pagina propria
+"""
+
+print(mostrar_todos_os_paises_existentes())
+print(f"\n{'-' * 20}\n")
