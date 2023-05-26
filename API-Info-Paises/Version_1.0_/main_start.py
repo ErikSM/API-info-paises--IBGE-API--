@@ -122,15 +122,15 @@ class AppStart:
     def _select_continent(self, mostrar_paises, quantidade_de_de_paises):
         self.all_config_settings("countries", self.search)
 
-        continente_selecionado = self.list.get(tkinter.ANCHOR)
+        selected_continent = self.list.get(tkinter.ANCHOR)
 
         self.text.delete(1.0, END)
-        self.text.insert(END, f"- {continente_selecionado}:\n")
+        self.text.insert(END, f"- {selected_continent}:\n")
         self.text.insert(END, f"Este continente possui um total de "
-                              f"{quantidade_de_de_paises[continente_selecionado]} paises.")
+                              f"{quantidade_de_de_paises[selected_continent]} paises.")
 
         self.list.delete(0, END)
-        for pais in mostrar_paises[continente_selecionado]:
+        for pais in mostrar_paises[selected_continent]:
             self.list.insert(END, f"{pais}\n")
 
     def search(self):
