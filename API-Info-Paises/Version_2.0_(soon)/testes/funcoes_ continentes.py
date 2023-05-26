@@ -40,7 +40,7 @@ try:
             country.location['regiao especifica'] = "---"
         else:
             country.location['regiao especifica'] = item['regiao-intermediaria']['nome']
-        #  -----------------------------------------------------------------------------------------
+        #  ---------------------------------------------------------------------------------------------------
 
         all_countries_of_the_each_region[item['sub-regiao']['nome']].add(country)
 
@@ -66,34 +66,23 @@ except Exception as ex:
         all_world_locations[i] = f"  xxErrorxx \n\n{ex}"
 
 
-def show_continents():
-    lista_temporaria_1 = list()
-    for cont in all_world_locations:
-        lista_temporaria_1.append(cont)
-
-    return lista_temporaria_1
+def mostrar_continentes():
+    for continent in all_world_locations:
+        print(continent)
 
 
-def show_regions_from_selected_continent(continent):
-    lista_temporaria_2 = list()
+def mostrar_regiao_de_continente_selecionado(continent):
     for reg in all_world_locations[continent]:
-        lista_temporaria_2.append(reg)
-
-    return lista_temporaria_2
+        print(reg)
 
 
-def show_countries_from_selected_region(cont, region_of_cont):
-    lista_temporaria_3 = list()
-    for ctry in all_world_locations[cont][region_of_cont]:
-        lista_temporaria_3.append(ctry.name)
-
-    return lista_temporaria_3
+def mostrar_paises_de_regiao_selecionada(continent, reg):
+    for ctry in all_world_locations[continent][reg]:
+        print(ctry.name)
 
 
-show_continents()
+"""show_continents()
 show_regions_from_selected_continent("Europa")
-show_countries_from_selected_region("Europa", "Europa meridional  (Sul da Europa)")
-
-
+show_countries_from_selected_region("Europa", "Europa meridional  (Sul da Europa)")"""
 
 
