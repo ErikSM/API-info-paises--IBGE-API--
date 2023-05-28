@@ -63,7 +63,7 @@ try:
 
 except Exception as ex:
     for i in all_world_locations:
-        all_world_locations[i] = f"  xxErrorxx \n\n{ex}"
+        all_world_locations[i] = f"  xxErrorxx[capture_continents.py]: \n\n{ex}"
 
 
 def show_continents():
@@ -89,11 +89,6 @@ def show_countries_from_selected_region(cont, region_of_cont):
 
     return lista_temporaria_3
 
-
-show_continents()
+'''show_continents()
 show_regions_from_selected_continent("Europa")
-show_countries_from_selected_region("Europa", "Europa meridional  (Sul da Europa)")
-
-
-
-
+show_countries_from_selected_region("Europa", "Europa meridional  (Sul da Europa)")'''

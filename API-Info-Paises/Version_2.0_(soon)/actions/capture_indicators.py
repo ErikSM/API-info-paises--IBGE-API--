@@ -1,6 +1,8 @@
 import json
 import requests
 
+from objects.Country import Country
+
 
 def show_indicators_id():
     try:
@@ -20,33 +22,42 @@ def show_indicators_id():
         return error_dict
 
 
-def show_specific_indicator_of_specific_country(country, indicator):
+def show_specific_indicator_of_specific_country(country: Country, indicator):
     country = country
     indicator = indicator
 
     try:
-        request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/paises/{country}/indicadores/{indicator}")
-        dict_of_indicator = json.loads(request.text)
+        request = requests.get(
+            f"https://servicodados.ibge.gov.br/api/v1/paises/{country.code_id}/indicadores/{indicator}")
+        list_of_indicator = json.loads(request.text)
+
+        dict_of_indicator = list_of_indicator
 
         return dict_of_indicator
 
     except Exception as ex:
         dict_error = {"xxErrorxx (capture_indicator)": f"{ex}"}
 
-        lista_error = list()
-        lista_error.append(dict_error)
-
-        return lista_error
+        return dict_error
 
 
-def show_all_indicators_of_selected_country(country):
+def show_all_indicators_of_selected_country(country: Country):
     country = country
 
     try:
-        request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/paises/{country}/indicadores/")
+        request = requests.get(f"https://servicodados.ibge.gov.br/api/v1/paises/{country.code_id}/indicadores/")
         dict_of_indicator = json.loads(request.text)
 
         return dict_of_indicator
 
+
+
     except Exception as ex:
         print(ex)
+
+
+'''print(show_indicators_id())
+print("--------------")
+print(show_all_indicators_of_selected_country("US"))
+print("--------------")
+print(show_specific_indicator_of_specific_country("BR", "77818"))'''

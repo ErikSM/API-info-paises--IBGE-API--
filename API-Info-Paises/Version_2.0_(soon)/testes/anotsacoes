@@ -1,0 +1,15 @@
+| ou A.union(B): uniao
+& ou A.intersect(B) intersecao
+in :e' membro
+<= :subconjunto (esta contido)
+< :subconjunto proprio(contido e nao igual)
+- :diferenca
+
+remove() ou discard(): para remover
+
+set() ou .add(): para adicionar
+
+set(): para criar
+
+{}: representado igual ao dicionario
+

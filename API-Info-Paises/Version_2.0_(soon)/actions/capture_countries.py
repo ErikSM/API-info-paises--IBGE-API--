@@ -31,8 +31,8 @@ try:
 except Exception as ex_1:
     first_error = ex_1
 
-    all_countries_of_the_world_dict_names["xxERRorxx"] = first_error
-    all_countries_of_the_world_dict_acronyms["xxERRorxx"] = first_error
+    all_countries_of_the_world_dict_names["xxERRorxx[all_world_in_source()]"] = first_error
+    all_countries_of_the_world_dict_acronyms["xxERRorxx[all_world_in_source()]"] = first_error
 
 
 def capture_information_about_specific_country(pais):
@@ -76,7 +76,7 @@ def capture_information_about_specific_country(pais):
         return information_dict
 
     except Exception as ex_2:
-        secound_error = f"xxERRorxx({ex_2})"
+        secound_error = f"xxERRorxx[:::specific_world_in_source():::{ex_2}]"
         error_dict = {"id_country": secound_error,
                       "name_country": secound_error,
                       "location": secound_error,
@@ -87,8 +87,6 @@ def capture_information_about_specific_country(pais):
                       "historic": secound_error}
 
         return error_dict
-
-
 
 
 """print(all_countries_of_the_world_dict_names)
